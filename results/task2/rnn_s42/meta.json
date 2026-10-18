@@ -1,0 +1,20 @@
+{
+ "name": "rnn",
+ "seed": 42,
+ "date": "2026-10-18T11:24:09",
+ "git": {
+  "commit": "bed852ddbcabab7febef0b596e7fbd78cf5b197d",
+  "branch": "main",
+  "dirty": true
+ },
+ "host": "Rana",
+ "platform": "Windows-11-10.0.26200-SP0",
+ "python": "3.13.7",
+ "torch": "2.14.1+cpu",
+ "device": "cpu (precision=fp32, compile=no)",
+ "world_size": 1,
+ "command": "C:\\Users\\shamo\\OneDrive\\Documents\\Rana\\Classes\\CMPE258-DeepLearning\\LLM_HW1\\part1\\DeepDataMiningLearning\\DeepDataMiningLearning\\llm\\nanolm\\train.py --config C:\\Users\\shamo\\OneDrive\\Documents\\Rana\\Classes\\CMPE258-DeepLearning\\LLM_HW1\\part1\\DeepDataMiningLearning\\DeepDataMiningLearning\\llm\\nanolm\\configs\\02_char_transformer.yaml train.max_steps=300 train.warmup_steps=15 train.seq_len=256 train.batch_size=32 model.arch=\"rnn\" model.n_layers=2 model.dim=256 train.lr=\"2e-3\" train.weight_decay=0.0 name=rnn seed=42 run_dir=C:\\Users\\shamo\\OneDrive\\Documents\\Rana\\Classes\\CMPE258-DeepLearning\\LLM_HW1\\part1\\DeepDataMiningLearning\\DeepDataMiningLearning\\llm\\outputs\\nanolm\\sweeps\\char_models_laptop\\rnn_s42 tags=[\"char_models_laptop\"]",
+ "tags": [
+  "char_models_laptop"
+ ]
+}

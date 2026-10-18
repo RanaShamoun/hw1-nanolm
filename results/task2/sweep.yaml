@@ -1,0 +1,21 @@
+# Laptop version of 01_char_models.yaml: identical except 150 steps with 15 warmup steps.
+name: char_models_laptop
+base: ../02_char_transformer.yaml
+seeds: [1337, 42]
+common:
+  train.max_steps: 300
+  train.warmup_steps: 15
+  train.seq_len: 256
+  train.batch_size: 32
+runs:
+  - name: rnn
+    overrides: {model.arch: rnn, model.n_layers: 2, model.dim: 256, train.lr: 2e-3, train.weight_decay: 0.0}
+  - name: gru
+    overrides: {model.arch: gru, model.n_layers: 2, model.dim: 256, train.lr: 2e-3, train.weight_decay: 0.0}
+  - name: lstm
+    overrides: {model.arch: lstm, model.n_layers: 2, model.dim: 256, train.lr: 2e-3, train.weight_decay: 0.0}
+  - name: lstm_512
+    overrides: {model.arch: lstm, model.n_layers: 2, model.dim: 512, train.lr: 2e-3, train.weight_decay: 0.0}
+  - name: gpt_textbook
+  - name: gpt_modern
+    overrides: {model.norm: rmsnorm, model.pos: rope, model.mlp: swiglu, model.bias: false}
