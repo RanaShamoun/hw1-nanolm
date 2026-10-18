@@ -1,0 +1,7 @@
+outputs (zero init state)          max|diff| = 1.665e-16   PASS
+final hidden (zero init state)     max|diff| = 1.110e-16   PASS
+outputs (random init state)        max|diff| = 4.441e-16   PASS
+grad weight_ih                     max|diff| = 1.421e-14   PASS
+grad weight_hh                     max|diff| = 1.776e-15   PASS
+
+ALL CHECKS PASSED
