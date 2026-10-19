@@ -8,12 +8,10 @@ def main(sweep_dir, out_png, out_csv):
     final = defaultdict(dict)                      # final[model][T] -> list of bpb over seeds
     for d in sorted(glob.glob(os.path.join(sweep_dir, "*_T*_s*"))):
         m = re.match(r"(.+)_T(\d+)_s(\d+)$", os.path.basename(d))
-        f = os.path.join(d, "eval_log.jsonl")
+        f = os.path.join(d, "metrics.json")      # only written when a run has finished
         if not m or not os.path.exists(f):
             continue
-        rows = [json.loads(l) for l in open(f, encoding="utf-8") if l.strip()]
-        if rows:
-            final[m.group(1)].setdefault(int(m.group(2)), []).append(rows[-1]["bpb"])
+        final[m.group(1)].setdefault(int(m.group(2)), []).append(json.load(open(f))["val_bpb"])
     if not final:
         sys.exit(f"No finished runs matching *_T*_s* with eval_log.jsonl in {sweep_dir}")
 

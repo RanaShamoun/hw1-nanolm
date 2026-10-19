@@ -1,0 +1,20 @@
+{
+ "name": "gpt_modern_T64",
+ "seed": 1337,
+ "date": "2026-10-18T13:38:01",
+ "git": {
+  "commit": "bed852ddbcabab7febef0b596e7fbd78cf5b197d",
+  "branch": "main",
+  "dirty": true
+ },
+ "host": "Rana",
+ "platform": "Windows-11-10.0.26200-SP0",
+ "python": "3.13.7",
+ "torch": "2.14.1+cpu",
+ "device": "cpu (precision=fp32, compile=no)",
+ "world_size": 1,
+ "command": "C:\\Users\\shamo\\OneDrive\\Documents\\Rana\\Classes\\CMPE258-DeepLearning\\LLM_HW1\\part1\\DeepDataMiningLearning\\DeepDataMiningLearning\\llm\\nanolm\\train.py --config C:\\Users\\shamo\\OneDrive\\Documents\\Rana\\Classes\\CMPE258-DeepLearning\\LLM_HW1\\part1\\DeepDataMiningLearning\\DeepDataMiningLearning\\llm\\nanolm\\configs\\02_char_transformer.yaml train.max_steps=300 train.warmup_steps=15 train.log_every=10 train.eval_every=25 model.norm=\"rmsnorm\" model.pos=\"rope\" model.mlp=\"swiglu\" model.bias=false train.seq_len=64 train.batch_size=128 name=gpt_modern_T64 seed=1337 run_dir=C:\\Users\\shamo\\OneDrive\\Documents\\Rana\\Classes\\CMPE258-DeepLearning\\LLM_HW1\\part1\\DeepDataMiningLearning\\DeepDataMiningLearning\\llm\\outputs\\nanolm\\sweeps\\ctx_laptop\\gpt_modern_T64_s1337 tags=[\"ctx_laptop\"]",
+ "tags": [
+  "ctx_laptop"
+ ]
+}
