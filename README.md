@@ -20,8 +20,14 @@ Machine: HP laptop, CPU only (no NVIDIA GPU), Python 3.13, PyTorch 2.14 (CPU).
 - `scripts/task2_curves.py` makes `figures/task2_curves.png`: lines are training loss in bits per byte (logged every 50 steps, mean of 2 seeds); hollow squares are validation bpb at steps 250 and 300.
 - `figures/task2_curves.png` is the figure to use. The tool's own `curves.png` is not included, because it only covers steps 250 to 300, the only steps where this sweep logged validation.
 
-## Task 3 / 4
+## Task 3 - context length
 To be added.
+
+## Task 4 - attention analysis
+- `scripts/task4_heads.py` imports `attention_maps` from `nanolm.viz` and scores every head of a trained `gpt_modern` run: average attention weight on the current token (`cur`), previous token (`prev`), two back (`prev2`), first token (`first`), and the first character of the current word (`wordstart`, counted only where the word start is at least 3 characters back). Each score is printed next to a chance baseline (mean of 1/(t+1) over the same positions).
+- Three texts: Shakespeare, modern prose, and repetitive text (all under 256 characters).
+- `results/task4_heads.csv` (seed 1337 model) and `results/task4_heads_seed42.csv` (seed 42 model).
+- `figures/task4_*.png`: attention maps from `python -m nanolm.viz attention`.
 
 
 ## Reduced budget (laptop)
