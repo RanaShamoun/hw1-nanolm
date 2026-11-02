@@ -20,13 +20,14 @@ Machine: HP laptop, CPU only (no NVIDIA GPU), Python 3.13, PyTorch 2.14 (CPU).
 - `scripts/task2_curves.py` makes `figures/task2_curves.png`: lines are training loss in bits per byte (logged every 50 steps, mean of 2 seeds); hollow squares are validation bpb at steps 250 and 300.
 - `figures/task2_curves.png` is the figure to use. The tool's own `curves.png` is not included, because it only covers steps 250 to 300, the only steps where this sweep logged validation.
 
+- `configs/03_full_lstm_laptop.yaml` and `results/task2_full_lstm/`: LSTM 2x256 vs 2x512 for the full 2000 steps (seed 1337). `scripts/task2_full_lstm.py` makes `figures/task2_full_lstm.png`. The 2x512 reaches its best validation bpb (2.1306) at step 1200 and ends at 2.1791 while its training bpb keeps falling; the 2x256 ends at 2.1392.
+
 ## Task 3 - context length
 - `configs/02_context_laptop.yaml`: LSTM 2x256 and modern Transformer at seq_len 64/128/256/512, 300 steps (15 warmup), seed 1337. Tokens per step is held at 8192 (batch_size x seq_len), so every run sees 2.46M tokens. Logging every 10 steps, evaluation every 25.
 - `results/task3/`: one folder per run (config, metrics, logs, sample).
 - `scripts/task3_context.py` makes `figures/task3_context.png` and `results/task3_context.csv` from the finished runs (it reads `metrics.json`).
-- Validation bpb at T = 64 / 128 / 256 / 512: LSTM 2.862 / 2.855 / 2.857 / 2.867; modern Transformer 2.494 / 2.486 / 2.526 / 2.588. Seed noise floor from Task 2 is 0.009 bpb.
-- The T=256 runs reproduce the Task 2 seed-1337 results exactly, so the changed logging intervals do not affect training.
-- One seed per point.
+- Seeds: 1337 at all four lengths; 42 at T = 64, 256 and 512 (`configs/02_context_laptop_seed42.yaml`). The seed-42 T = 256 runs are copies of the Task 2 seed-42 runs. `results/task3/sweep.yaml` comes from the seed-42 sweep; the seed-1337 settings are in `configs/02_context_laptop.yaml`.
+- Validation bpb at T = 64 / 128 / 256 / 512 (mean of seeds; T = 128 is seed 1337 only): LSTM 2.8655 / 2.8554 / 2.8538 / 2.8585; modern Transformer 2.4885 / 2.4859 / 2.5018 / 2.5743. Seed noise floor from Task 2 is 0.009 bpb.
 
 ## Task 4 - attention analysis
 - `scripts/task4_heads.py` imports `attention_maps` from `nanolm.viz` and scores every head of a trained `gpt_modern` run: average attention weight on the current token (`cur`), previous token (`prev`), two back (`prev2`), first token (`first`), and the first character of the current word (`wordstart`, counted only where the word start is at least 3 characters back). Each score is printed next to a chance baseline (mean of 1/(t+1) over the same positions).

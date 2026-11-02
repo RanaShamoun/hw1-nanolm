@@ -1,0 +1,20 @@
+{
+ "name": "lstm_256",
+ "seed": 1337,
+ "date": "2026-11-01T15:49:10",
+ "git": {
+  "commit": "bed852ddbcabab7febef0b596e7fbd78cf5b197d",
+  "branch": "main",
+  "dirty": true
+ },
+ "host": "Rana",
+ "platform": "Windows-11-10.0.26200-SP0",
+ "python": "3.13.7",
+ "torch": "2.14.1+cpu",
+ "device": "cpu (precision=fp32, compile=no)",
+ "world_size": 1,
+ "command": "C:\\Users\\shamo\\OneDrive\\Documents\\Rana\\Classes\\CMPE258-DeepLearning\\LLM_HW1\\part1\\DeepDataMiningLearning\\DeepDataMiningLearning\\llm\\nanolm\\train.py --config C:\\Users\\shamo\\OneDrive\\Documents\\Rana\\Classes\\CMPE258-DeepLearning\\LLM_HW1\\part1\\DeepDataMiningLearning\\DeepDataMiningLearning\\llm\\nanolm\\configs\\02_char_transformer.yaml train.max_steps=2000 train.warmup_steps=100 train.seq_len=256 train.batch_size=32 train.log_every=20 train.eval_every=100 model.arch=\"lstm\" model.n_layers=2 model.dim=256 train.lr=\"2e-3\" train.weight_decay=0.0 name=lstm_256 seed=1337 run_dir=C:\\Users\\shamo\\OneDrive\\Documents\\Rana\\Classes\\CMPE258-DeepLearning\\LLM_HW1\\part1\\DeepDataMiningLearning\\DeepDataMiningLearning\\llm\\outputs\\nanolm\\sweeps\\full_lstm\\lstm_256_s1337 tags=[\"full_lstm\"]",
+ "tags": [
+  "full_lstm"
+ ]
+}

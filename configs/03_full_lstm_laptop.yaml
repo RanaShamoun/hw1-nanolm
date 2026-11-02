@@ -1,0 +1,15 @@
+name: full_lstm
+base: ../02_char_transformer.yaml
+seeds: [1337]
+common:
+  train.max_steps: 2000
+  train.warmup_steps: 100
+  train.seq_len: 256
+  train.batch_size: 32
+  train.log_every: 20
+  train.eval_every: 100
+runs:
+  - name: lstm_256
+    overrides: {model.arch: lstm, model.n_layers: 2, model.dim: 256, train.lr: 2e-3, train.weight_decay: 0.0}
+  - name: lstm_512
+    overrides: {model.arch: lstm, model.n_layers: 2, model.dim: 512, train.lr: 2e-3, train.weight_decay: 0.0}
