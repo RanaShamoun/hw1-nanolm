@@ -1,14 +1,21 @@
-"""Score every attention head of a nanolm GPT: average weight on the previous token, etc.
+"""Score every attention head of a nanolm GPT.
 Usage (run from the llm folder):
-  python task4_heads.py RUN_DIR OUT.csv "text 1" "text 2" "text 3"
+  python task4_heads.py RUN_DIR OUT.csv "text 1" "text 2" @textfile.txt
+An argument that starts with @ is read from that UTF-8 text file (so texts can contain newlines).
+Columns (average attention weight on the position named):
+  cur, prev, prev2   current character, previous, two back
+  first              first character of the text
+  wordstart          first character of the current word (only positions >= 3 characters into a word, first word skipped)
+  marker             any ':' or newline character at or before the current position (speaker-label marker)
+  dist               mean look-back distance in characters, sum_s A[t,s] * (t - s), averaged over positions
 """
 import csv, os, sys
 import numpy as np
 
 WS = " \n\t"
+MARK = ":\n"
 
 def word_starts(text):
-    """index of the first character of the word containing each position (None for whitespace)."""
     starts, s = [], 0
     for i, ch in enumerate(text):
         if ch in WS:
@@ -26,19 +33,27 @@ def positions_for(text):
     T = len(text)
     ws = word_starts(text)
     pos = {
-        "cur":  list(range(1, T)),                      # offset 0: attention on itself
-        "prev": list(range(1, T)),                      # offset 1
-        "prev2": list(range(2, T)),                     # offset 2
-        "first": list(range(1, T)),                     # first token of the text (attention sink)
-        # word start: skip the first word (it IS the first token), and skip positions where the word start
-        # is the current or previous character (those would overlap with the offset 0 / 1 scores)
+        "cur":  list(range(1, T)),
+        "prev": list(range(1, T)),
+        "prev2": list(range(2, T)),
+        "first": list(range(1, T)),
         "wordstart": [t for t in range(T) if ws[t] is not None and ws[t] > 0 and t - ws[t] >= 3],
+        "marker": list(range(1, T)),
+        "dist": list(range(1, T)),
     }
     return pos, ws
+
+def baselines(text, pos):
+    marks = np.cumsum([1 if c in MARK else 0 for c in text])
+    base = {k: chance(pos[k]) for k in ["cur", "prev", "prev2", "first", "wordstart"]}
+    base["marker"] = float(np.mean([marks[t] / (t + 1) for t in pos["marker"]]))
+    base["dist"] = float(np.mean([t / 2.0 for t in pos["dist"]]))
+    return base
 
 def score_head(A, text, pos=None, ws=None):
     if pos is None:
         pos, ws = positions_for(text)
+    marker_idx = [i for i, c in enumerate(text) if c in MARK]
     def avg(ps, f):
         return float(np.mean([f(t) for t in ps])) if ps else float("nan")
     return {
@@ -47,25 +62,33 @@ def score_head(A, text, pos=None, ws=None):
         "prev2": avg(pos["prev2"], lambda t: A[t, t - 2]),
         "first": avg(pos["first"], lambda t: A[t, 0]),
         "wordstart": avg(pos["wordstart"], lambda t: A[t, ws[t]]),
+        "marker": avg(pos["marker"], lambda t: float(sum(A[t, i] for i in marker_idx if i <= t))),
+        "dist": avg(pos["dist"], lambda t: float(sum(A[t, s] * (t - s) for s in range(t + 1)))),
     }
 
-KEYS = ["cur", "prev", "prev2", "first", "wordstart"]
+KEYS = ["cur", "prev", "prev2", "first", "wordstart", "marker", "dist"]
+
+def load_text(arg):
+    if arg.startswith("@"):
+        return open(arg[1:], encoding="utf-8").read()
+    return arg
 
 def main(run_dir, out_csv, texts):
-    sys.path.insert(0, os.getcwd())                     # so `import nanolm` works from the llm folder
+    sys.path.insert(0, os.getcwd())
     import torch
     from nanolm.viz import load_run, attention_maps
     cfg, model, tok, dinfo, _ = load_run(run_dir)
     model.eval()
     rows, per_text = [], []
-    for ti, text in enumerate(texts, 1):
+    for ti, arg in enumerate(texts, 1):
+        text = load_text(arg)
         ids = tok.encode(text)
         if len(ids) != len(text):
-            print(f"WARNING text {ti}: {len(ids)} tokens for {len(text)} characters; word-start scores assume 1 token per character")
+            print(f"WARNING text {ti}: {len(ids)} tokens for {len(text)} characters; scores assume 1 token per character")
         with torch.no_grad():
             maps = attention_maps(model, torch.tensor([ids]))
         pos, ws = positions_for(text)
-        base = {k: chance(pos[k]) for k in KEYS}
+        base = baselines(text, pos)
         print(f"\n=== text {ti} ({len(text)} chars): {text[:60]!r}")
         print(f"{'head':6s}" + "".join(f"{k:>11s}" for k in KEYS))
         print(f"{'chance':6s}" + "".join(f"{base[k]:11.3f}" for k in KEYS))

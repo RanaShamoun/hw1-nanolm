@@ -34,6 +34,8 @@ Machine: HP laptop, CPU only (no NVIDIA GPU), Python 3.13, PyTorch 2.14 (CPU).
 - Three texts: Shakespeare, modern prose, and repetitive text (all under 256 characters).
 - `results/task4_heads.csv` (seed 1337 model) and `results/task4_heads_seed42.csv` (seed 42 model).
 - `figures/task4_*.png`: attention maps from `python -m nanolm.viz attention`.
+- `scripts/task4_heads.py` also reports the weight on colon and newline characters (`marker`) and each head's mean look-back distance (`dist`). `scripts/shakes_dialogue.txt` is the 184-character two-speaker text used for those two measures: `python scripts/task4_heads.py <run dir> <out.csv> @scripts/shakes_dialogue.txt` (run from the llm folder).
+- `results/task4_markers_seed1337.csv` and `results/task4_markers_seed42.csv`: all measures on the dialogue text. Marker heads: seed 1337 head 3.2 (0.407, chance 0.058) and seed 42 head 2.2 (0.461). The same two heads have the longest mean look-back (34.2 and 31.5 characters; uniform attention would give 46).
 
 
 ## Reduced budget (laptop)
