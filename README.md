@@ -1,8 +1,9 @@
 # HW 1 - Language models from scratch (Part 1)
 
 Course code: https://github.com/lkk688/DeepDataMiningLearning (llm/nanolm). Not copied here; this repo holds only my scripts, configs and results.
+The report submitted on Canvas is `HW1_report.pdf` in this repo.
 
-Machine: HP laptop, CPU only (no NVIDIA GPU), Python 3.13, PyTorch 2.14 (CPU).
+Machine: HP laptop (CPU), Python 3.13, PyTorch 2.14.
 
 ## Task 1 - metrics by hand
 - scripts/task1_metrics.py recomputes ppl, bits/token and bpb from metrics.json
@@ -19,7 +20,6 @@ Machine: HP laptop, CPU only (no NVIDIA GPU), Python 3.13, PyTorch 2.14 (CPU).
 - `results/task2/` holds each run's config, metrics and logs, plus `summary.csv` and `summary.md` (written by `nanolm.analyze`) and `analyze_output.txt` (the results table with parameter counts and the seed noise floor).
 - `scripts/task2_curves.py` makes `figures/task2_curves.png`: lines are training loss in bits per byte (logged every 50 steps, mean of 2 seeds); hollow squares are validation bpb at steps 250 and 300.
 - `figures/task2_curves.png` is the figure to use. The tool's own `curves.png` is not included, because it only covers steps 250 to 300, the only steps where this sweep logged validation.
-
 - `configs/03_full_lstm_laptop.yaml` and `results/task2_full_lstm/`: LSTM 2x256 vs 2x512 for the full 2000 steps (seed 1337). `scripts/task2_full_lstm.py` makes `figures/task2_full_lstm.png`. The 2x512 reaches its best validation bpb (2.1306) at step 1200 and ends at 2.1791 while its training bpb keeps falling; the 2x256 ends at 2.1392.
 
 ## Task 3 - context length
@@ -34,9 +34,9 @@ Machine: HP laptop, CPU only (no NVIDIA GPU), Python 3.13, PyTorch 2.14 (CPU).
 - Three texts: Shakespeare, modern prose, and repetitive text (all under 256 characters).
 - `results/task4_heads.csv` (seed 1337 model) and `results/task4_heads_seed42.csv` (seed 42 model).
 - `figures/task4_*.png`: attention maps from `python -m nanolm.viz attention`.
-- `scripts/task4_heads.py` also reports the weight on colon and newline characters (`marker`) and each head's mean look-back distance (`dist`). `scripts/shakes_dialogue.txt` is the 184-character two-speaker text used for those two measures: `python scripts/task4_heads.py <run dir> <out.csv> @scripts/shakes_dialogue.txt` (run from the llm folder).
+- `scripts/task4_heads.py` also reports the weight on colon and newline characters (`marker`) and each head's mean look-back distance (`dist`). `scripts/shakes_dialogue.txt` is the 184-character two-speaker text used for those two measures . Run it from the course repo's `llm` folder (it imports `nanolm`), giving full paths to this repo's files: `python <this repo>/scripts/task4_heads.py <run dir> <out.csv> @Mthis repo>/scripts/shakes_dialogue.txt`.
 - `results/task4_markers_seed1337.csv` and `results/task4_markers_seed42.csv`: all measures on the dialogue text. Marker heads: seed 1337 head 3.2 (0.407, chance 0.058) and seed 42 head 2.2 (0.461). The same two heads have the longest mean look-back (34.2 and 31.5 characters; uniform attention would give 46).
 
 
-## Reduced budget (laptop)
-configs/01_char_models_laptop.yaml is the course sweep 01_char_models.yaml with max_steps 300 and warmup_steps 15 instead of 2000 and 100.
+## Reduced budget
+`configs/01_char_models_laptop.yaml` is the course sweep `01_char_models.yaml` with `max_steps` 300 and `warmup_steps` 15 instead of 2000 and 100. The exception is the Task 2 full-budget LSTM pair (`configs/03_full_lstm_laptop.yaml`), which uses the full 2000 steps.
